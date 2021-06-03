@@ -6,6 +6,7 @@ import com.studies.microserviceuser.request.UserPostRequest;
 import com.studies.microserviceuser.request.UserPutRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import mapper.UserMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,7 +32,8 @@ public class UserService {
 
     public User save(UserPostRequest userPostRequest) {
         log.info("m=saveUser stage=init");
-        var user = User.builder().name(userPostRequest.getName()).build();
+        var user = UserMapper.INSTANCE.toUser(userPostRequest);
+//        var user = User.builder().name(userPostRequest.getName()).build();
         return userRepository.save(user);
     }
 
@@ -43,10 +45,12 @@ public class UserService {
     public void update(UserPutRequest userPutRequest) {
         log.info("m=replaceUser stage=init");
         var savedUser = findUserByIdOrThrowBadRequestException(userPutRequest.getUserId());
-        var user = User.builder()
-                .userId(savedUser.getUserId())
-                .name(userPutRequest.getName())
-                .build();
+        var user = UserMapper.INSTANCE.toUser(userPutRequest);
+        user.setUserId(savedUser.getUserId());
+//        var user = User.builder()
+//                .userId(savedUser.getUserId())
+//                .name(userPutRequest.getName())
+//                .build();
         userRepository.save(user);
     }
 }
