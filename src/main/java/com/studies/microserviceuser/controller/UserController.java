@@ -31,6 +31,12 @@ public class UserController {
         return new ResponseEntity<>(userService.findUserByIdOrThrowBadRequestException(userId), HttpStatus.OK);
     }
 
+    @GetMapping("/find")
+    public ResponseEntity<List<User>> findUserById(@RequestParam("userName") String username) {
+        log.info("method = GET, path = '/find?userName={}'", username);
+        return new ResponseEntity<>(userService.findUsersByName(username), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<User> saveUser(@RequestBody UserPostRequest userPostRequest) {
         log.info("method = POST, path = 'users'");

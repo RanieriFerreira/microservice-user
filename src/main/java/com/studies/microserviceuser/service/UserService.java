@@ -1,6 +1,7 @@
 package com.studies.microserviceuser.service;
 
 import com.studies.microserviceuser.domain.User;
+import com.studies.microserviceuser.exception.BadRequestException;
 import com.studies.microserviceuser.repository.UserRepository;
 import com.studies.microserviceuser.request.UserPostRequest;
 import com.studies.microserviceuser.request.UserPutRequest;
@@ -24,10 +25,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> findUsersByName(String userName) {
+        return userRepository.findUserByName(userName);
+    }
+
     public User findUserByIdOrThrowBadRequestException(Long userId) {
         log.info("m=getUserById stage=init");
         return userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found"));
+                .orElseThrow(() -> new BadRequestException("User not found"));
     }
 
     public User save(UserPostRequest userPostRequest) {
